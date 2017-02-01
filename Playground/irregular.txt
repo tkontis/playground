@@ -1,0 +1,26 @@
+# unchangeable
+fish fish
+fruit fruit
+deer deer
+means means
+offspring offspring
+series series
+sheep sheep
+species species
+
+# change to -en
+man men
+woman women
+child children
+ox oxen
+
+# -oo- -> -ee-
+foot feet
+goose geese
+tooth teeth
+
+# -ouse -> -ice
+mouse mice
+louse lice
+
+roof roofs
