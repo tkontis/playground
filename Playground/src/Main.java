@@ -35,5 +35,9 @@ public class Main {
         System.out.printf("stringify1: %s%n", out1);
         System.out.printf("stringify2: %s%n", out2);
 
+	System.out.print("<select");
+	System.out.print(
+			" " + String.join(" ", new String[] { "class='rated'", "checked='checked'", "type='button'" }));
+	System.out.println(">");
     }
 }

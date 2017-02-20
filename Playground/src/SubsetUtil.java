@@ -40,22 +40,6 @@ public class SubsetUtil {
 	    	})
 	    	.flatMapToInt(entry-> entry.getValue()>1 ? IntStream.of(entry.getKey(), entry.getKey()) : IntStream.of(entry.getKey()))
 	    	.toArray();
-
-
-//	    for (int i = 0; i < total - 1; i++) {
-//	    	int a = ints[i];
-//		excludedPairs.computeIfAbsent(a, HashSet::new);
-//		Set<Integer> pairs = excludedPairs.get(a);
-//		for (int j = i + 1; j < total; j++) {
-//		    int b = ints[j];
-//		    int sum = a + b;
-//		    sums.computeIfAbsent(sum, s -> s % k != 0);
-//		    if (!sums.get(sum)) {
-//			continue validateInts;
-//		    }
-//		}
-//		subset.add(ints[i]);
-//	    }
 	}
 	return subset;
     }

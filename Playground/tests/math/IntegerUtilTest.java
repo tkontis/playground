@@ -4,15 +4,14 @@ import org.junit.Test;
 
 import java.util.List;
 
-import static math.IntegerUtil.bestDivisor;
-import static math.IntegerUtil.calculateDigitSum;
-import static math.IntegerUtil.calculateDivisors;
+import static math.IntegerUtil.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.core.Is.is;
 
 public class IntegerUtilTest {
+
     @Test
     public void shouldCalculateDigitSum() throws Exception {
 	assertThat(calculateDigitSum(123), is(6));
