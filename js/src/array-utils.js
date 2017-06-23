@@ -8,14 +8,32 @@
  */
 function findDupes(arr, singleRef) {
   const single = !!singleRef;
-  return arr.reduce((a,e,i) => {
-    if (arr.indexOf(e)!==i) {
+  let containsNaN = false;
+  const results = arr.reduce((a,e,i) => {
+    if (isNaNEnhanced(e)) {
+      if (singleRef && !containsNaN && arr.includes(NaN)) {
+        a.push(NaN);
+        containsNaN = true;
+      }
+    } 
+    else if (arr.indexOf(e)!==i) {
       if (!single || !a.includes(e)) {
         a.push(e);
       }
     }
     return a;
   }, []);
+  
+  // For multiple occurrences handle NaN values separately due to its peculiarity (NaN!==NaN, arr.indexOf(NaN)===-1, etc)
+  if (!singleRef && arr.includes(NaN)) {
+    const NaNOccurrences = arr.filter(e => isNaNEnhanced(e));
+    results.push(...NaNOccurrences);
+  }
+  return results;
+}
+
+function isNaNEnhanced(e) {
+  return isNaN(e) && typeof(e)==='number';
 }
 
 module.exports.findDupes = findDupes;

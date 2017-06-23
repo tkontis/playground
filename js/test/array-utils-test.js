@@ -51,13 +51,11 @@ describe('Primitive-value arrays', () => {
       ];
       const expected = [];
       noDupeArrays.forEach(arr => {
-        const actual = findDupes(arr);
-        
-        expect(findDupes(arr)).to.have.members(expected);
+        expect(findDupes(arr, true)).to.have.members(expected);
       });
     });
 
-    it('should report duplicates one time in array', () => {
+    it('should report duplicates one time in results', () => {
       const singlyDupeArrays = [
         [1,1,2,3],
         ['abd', 'afc', 'abc', 'afc', 'abd', 'a', 'z'],
@@ -76,7 +74,8 @@ describe('Primitive-value arrays', () => {
         [undefined],
         ['', null, 0, undefined, false, NaN]
       ];
-      singlyDupeArrays.forEach(arr => expect(findDupes(arr, true)).to.have.members(expected));
+      singlyDupeArrays.forEach((arr,i) => 
+        expect(findDupes(arr, true)).to.have.members(expected[i]));
     });
   });
 
