@@ -1,0 +1,12 @@
+{
+    "compilerOptions": {
+        "baseUrl": "src",
+        "strict": true,
+        "downlevelIteration": true,
+        "isolatedModules": true,
+        "module": "commonjs",
+        "lib": ["es2016", "es2017"],
+        "outDir": "dist",
+        "moduleResolution": "node"
+    }
+}
