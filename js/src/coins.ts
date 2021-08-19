@@ -22,16 +22,19 @@ const descDenominationValues = (Object.values<string|Denomination>(Denomination)
 
 export class Wallet {
     private _money: Map<Denomination, number> = new Map<Denomination, number>();
-    private _total = 0;
+    get money(): Money {
+      return new Map<Denomination, number>(this._money);
+    }
 
-    private get total() { return this._total; }
-    private set total(total: number) {
-      if (total >= 0 && Number.isInteger(total) && total < Number.MAX_SAFE_INTEGER) {
-        this._total = total;
+    private _total = 0;
+    get total(): number { return this._total; }
+    private set total(value: number) {
+      if (value >= 0 && Number.isInteger(value) && value < Number.MAX_SAFE_INTEGER) {
+        this._total = value;
       }
     }
 
-    constructor(amount: number | Money) {
+    constructor(amount?: number | Money) {
       this.credit(amount);
     }
 
@@ -75,7 +78,7 @@ export class Wallet {
     /**
      * Adds the equivalent amount in cents to current money object
      */
-    credit(amount: number | Money): void {
+    credit(amount?: number | Money): void {
       if (typeof amount === 'number') {
         let rest = Wallet.normalizeAmount(amount);
         for (const den of descDenominationValues) {

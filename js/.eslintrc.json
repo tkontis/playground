@@ -31,6 +31,9 @@
         "semi": [
             "error",
             "always"
-        ]
+        ],
+        "no-trailing-spaces": "error",
+        "no-useless-call": "error",
+        "no-useless-return": "error"
     }
 }

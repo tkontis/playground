@@ -15,7 +15,7 @@ function findDupes(arr, singleRef) {
         a.push(NaN);
         containsNaN = true;
       }
-    } 
+    }
     else if (arr.indexOf(e)!==i) {
       if (!single || !a.includes(e)) {
         a.push(e);
@@ -23,7 +23,7 @@ function findDupes(arr, singleRef) {
     }
     return a;
   }, []);
-  
+
   // For multiple occurrences handle NaN values separately due to its peculiarity (NaN!==NaN, arr.indexOf(NaN)===-1, etc)
   if (!singleRef && arr.includes(NaN)) {
     const NaNOccurrences = arr.filter(e => isNaNEnhanced(e));

@@ -5,8 +5,8 @@ class Trie {
   }
 
   sanitizeWord(word) {
-    if (typeof word !== 'string' || typeof word !== 'number') return '';
-    return String(word).toLowerCase().replace(/[^a-z]/g, '');
+    if (typeof word !== 'string' && typeof word !== 'number') return '';
+    return String(word).toLowerCase().replace(/[^a-z0-9]/g, '');
   }
 
   addWord(word) {
@@ -65,7 +65,7 @@ class Node {
     this.children = {};
   }
   hasChild(letter) {
-    return this.children.hasOwnProperty(letter);
+    return Object.prototype.hasOwnProperty.call(this.children, letter);
   }
   getChild(letter) {
     return this.children[letter] || null;

@@ -1,32 +1,42 @@
-import { expect } from 'chai';
-import { Wallet, Denomination } from '../src/coins';
-import type { Money } from '../src/coins';
+import {expect} from 'chai';
+import {Denomination, Wallet} from '../src/coins';
 
-describe('pay()', () => {
-    let wallet: Money = new Map();
+describe('Wallet', () => {
+  describe('constructor()', () => {
+    it('can be initialized with an amount or empty', () => {
+      const wallet = new Wallet(2400);
+      expect(wallet.total).to.equal(2400);
+      const emptyWallet = new Wallet();
+      expect(emptyWallet.total).to.equal(0);
+    });
+  });
 
-    beforeEach(() => {
-        wallet.clear();
+  describe('credit()', () => {
+    it('credits the wallet with the min quantity of the max denomination values when argument is an integer', () => {
+      const wallet = new Wallet();
+      wallet.credit(2400);
+      expect(wallet.money.size).to.equal(2, 'should hold 2 denomination values');
+      expect(wallet.money.get(Denomination.Euro20)).to.equal(1, 'should hold 1 20E bill');
+      expect(wallet.money.get(Denomination.Euro2)).to.equal(2, 'should hold 2 2E coins');
     });
 
-    it('throws a type error when invalid amount is given', () => {
-        wallet.set(Denomination.Euro2, 2);
-        wallet.set(Denomination.Cent10, 4);
-        const errorMsg = 'amount must be a positive integer';
-        expect(() => pay(wallet, 1.5)).to.throw(TypeError, errorMsg);
-        expect(() => pay(wallet, -1)).to.throw(TypeError, errorMsg);
+    it('credits specified denomination tuples when argument is of type Map<Denomination,number>', () => {
+      const wallet = new Wallet(1000);
+      const debitableAmount = new Map();
+      debitableAmount.set(Denomination.Euro5, 3);
+      debitableAmount.set(Denomination.Cent10, 1);
+      debitableAmount.set(Denomination.Cent1, 2);
+      wallet.credit(debitableAmount);
+      expect(wallet.total).to.equal(2512, '15.12E added to the initial 10.00E = 25.12E');
+      expect(wallet.money.size).to.equal(4, 'should hold 4 denomination values');
+      expect(wallet.money.get(Denomination.Euro10)).to.equal(1, '1x10E');
+      expect(wallet.money.get(Denomination.Euro5)).to.equal(3, '3x5E');
+      expect(wallet.money.get(Denomination.Cent10)).to.equal(1, '1x10c');
+      expect(wallet.money.get(Denomination.Cent1)).to.equal(2, '2x1c');
     });
+  });
 
-    it('returns zero change and an empty wallet for a payment of an equal amount to the one wallet is carrying', () => {
-        wallet.set(Denomination.Euro10, 1);
-        wallet.set(Denomination.Euro5, 1);
-        expect(countMoney(wallet)).to.equal(1500);
-        const change = pay(wallet, 1500);
-        expect(countMoney(wallet), 'wallet should be empty').to.equal(0);
-        expect(countMoney(change), 'there should be no change').to.equal(0);
-    });
-
-    it.skip('larger payable amount returns the correct amount of change', () => {
-        // TODO
-    });
-})
+  describe.skip('debit()', () => {
+    // TODO
+  });
+});

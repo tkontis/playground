@@ -7,7 +7,8 @@
 		"test": "test"
 	},
 	"scripts": {
-		"test": "cross-env TS_NODE_PROJECT='./tsconfig.json' mocha --color --require ts-node/register 'test/**/*.spec.{ts,js}'"
+		"test": "cross-env TS_NODE_PROJECT='./tsconfig.json' mocha --color --require ts-node/register 'test/**/*.spec.{ts,js}'",
+		"lint": "eslint --color --ext .js,.ts src test"
 	},
 	"repository": {
 		"type": "git",

@@ -13,7 +13,7 @@ describe('Trie data structure', () => {
     assert.isNull(trie.root.value);
     assert.deepEqual(trie.root.children, {});
   });
-  
+
   it('should create a populated trie tree with a string argument', () => {
     const sentence = 'this is an interesting data structure';
     trie = new Trie(sentence);

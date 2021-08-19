@@ -1,5 +1,5 @@
 //a constructor for adding a node to the tree
-var Node = function(value, edges){  
+var Node = function(value, edges){
   nodes[value] = {
     value: value,
     edges: edges
@@ -14,7 +14,7 @@ var nodes = {};
 //find out if there is a route from a to b
 const getRoute = (a,b) => {
   if (a === b) return true;
-  if (!a.edges.length || !b.edges.length) return false; 
+  if (!a.edges.length || !b.edges.length) return false;
   return (visit(a,b,[]) || visit(b,a,[]));
 };
 

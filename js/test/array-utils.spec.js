@@ -74,7 +74,7 @@ describe('Primitive-value arrays', () => {
         [undefined],
         ['', null, 0, undefined, false, NaN]
       ];
-      singlyDupeArrays.forEach((arr,i) => 
+      singlyDupeArrays.forEach((arr,i) =>
         expect(findDupes(arr, true)).to.have.members(expected[i]));
     });
   });

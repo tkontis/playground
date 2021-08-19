@@ -47,7 +47,7 @@ class Postfix {
     const peek = arr => arr.length ? arr[arr.length-1] : null;
 
     if (typeof infix !=='string' || infix === '') return null;
-    
+
     infix
       .replace(/\s+/g, '')    // strip all interleaved spaces
       .replace(/--|\+\+/g, '+')
@@ -73,15 +73,15 @@ class Postfix {
         }
       });
   }
-  
+
   // Shallow copy of internal token array. Tokens are mutable!!
   // TODO: turn Tokens into immutable objects.
   get tokens() {return this._postfix.slice();}
-  
+
   evaluate() {
     const stack = [];
     const postfixTokens = this.tokens();
-    
+
     for (let i=0, tokenCount=postfixTokens.length; i<tokenCount; i++) {
       const currToken = postfixTokens[i];
       let operator, operand1, operand2;
@@ -91,7 +91,7 @@ class Postfix {
         operator = currToken.val();
         operand1 = postfixTokens.shift();
         operand2 = postfixTokens.shift();
-        stack.push(operator.apply(operand1, operand2));                
+        stack.push(operator.apply(operand1, operand2));
         break;
       case 'NUM':
         stack.push(currToken.val());

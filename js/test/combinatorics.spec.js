@@ -1,5 +1,5 @@
-const {permute} = require('../src/combinatorics');
-const {expect} = require('chai');
+import { expect } from 'chai';
+import { permute } from '../src/combinatorics';
 
 describe('test permutations of distinct characters', () => {
   const words = ['', 'a', 'ab', 'abc', 'abcd'];

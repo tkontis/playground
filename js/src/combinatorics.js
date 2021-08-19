@@ -34,10 +34,10 @@ function permute(arr, comparator) {
 
   // produce permutations of distinct
   const perms = permuteUnique(distinct);
-  
-  // if there are no duplicate elements return already computed perms 
+
+  // if there are no duplicate elements return already computed perms
   if (!duplicates.length) return perms;
-  
+
   // intermix the duplicates
   //TODO
   return null;
