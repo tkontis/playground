@@ -1,6 +1,6 @@
 import { expect } from 'chai';
-import { pay, Denomination, countMoney } from 'coins';
-import type { Money } from 'coins';
+import { Wallet, Denomination } from '../src/coins';
+import type { Money } from '../src/coins';
 
 describe('pay()', () => {
     let wallet: Money = new Map();
@@ -17,13 +17,13 @@ describe('pay()', () => {
         expect(() => pay(wallet, -1)).to.throw(TypeError, errorMsg);
     });
 
-    it('an payment of an equal amount to the one wallet is carrying returns zero change and an empty wallet', () => {
+    it('returns zero change and an empty wallet for a payment of an equal amount to the one wallet is carrying', () => {
         wallet.set(Denomination.Euro10, 1);
         wallet.set(Denomination.Euro5, 1);
-        expect(countMoney(wallet)).to.be(1500);
+        expect(countMoney(wallet)).to.equal(1500);
         const change = pay(wallet, 1500);
-        expect(countMoney(wallet), 'wallet should be empty').to.be(0);
-        expect(countMoney(change), 'there should be no change').to.be(0);
+        expect(countMoney(wallet), 'wallet should be empty').to.equal(0);
+        expect(countMoney(change), 'there should be no change').to.equal(0);
     });
 
     it.skip('larger payable amount returns the correct amount of change', () => {

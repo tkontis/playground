@@ -1,3 +1,7 @@
+import { normalize } from "path";
+
+export type Money = Map<Denomination, number>;
+
 export enum Denomination {
     Cent1 = 1,
     Cent2 = 2,
@@ -14,63 +18,126 @@ export enum Denomination {
     Euro100 = 10000,
 }
 
-const denominations = Object.values(Denomination) as Denomination[];
+const descDenominationValues = (Object.values(Denomination)
+    .filter(d => typeof d !== 'string') as Denomination[])
+    .sort((a, b) => b - a);
 
-const getDenominationAmount = ([d, q]: [Denomination, number]) => d * q;
+export class Wallet {
+    private _total: number = 0;
+    private _money: Map<Denomination, number> = new Map<Denomination, number>();
 
-const sumDenominationAmount = (sum: number, denAmount: [Denomination, number]) => sum += getDenominationAmount(denAmount);
+    private get total() { return this._total; }
 
-export type Money = Map<Denomination, number>;
-
-export const countMoney = (money: Money): number => [...money.entries()].reduce(sumDenominationAmount, 0);
-
-const emptyWallet = (wallet: Money) => {
-    for (const den of wallet.keys()) {
-        wallet.set(den, 0);
-        wallet.clear();
+    private set total(total: number) {
+        if (total >= 0 && Number.isInteger(total) && total < Number.MAX_SAFE_INTEGER) {
+            this._total = total;
+        }
     }
-};
 
-const _paySolutions = (tuples: Array<[number, number]>, amount: number) => {
-    let solutions = [];
-    let debt = amount;
-    for (const [d, q] of tuples) {
-        const reqQty = Math.min(debt / d);
-        debt = debt - d * reqQty;
+    constructor(amount: number | Money) {
+        this.credit(amount);
     }
-};
 
-// guaranteed amount < walletMoney
-// solution with as few coins/bills as possible and as close to the exact amount as possible
-const _pay = (walletEntries: Array<[Denomination, number]>, amount: number) => {
-    let solution: Array<[Denomination, number]> = [];
-    for (const [d, q] of walletEntries) {
-        const dAmount = d * q;
-        // todo
+    static calculateTotal(money: Money): number {
+        let total = 0;
+        if (money) {
+            for (const [den, qty] of money.entries()) {
+                total += qty * den;
+            }
+        }
+        return total;
+    }
 
+    static add(money: Money, amount: number): void {
+        // TODO: implement!
     }
-};
 
-/**
- * Subtract from wallet if able to pay
- * @param wallet - gets mutated if transaction is completed successfully
- * @param amount - the payable amount in cents (integer)
- * @returns {Money} returns the change after the transaction takes place
- */
-export const pay = (wallet: Money, amount: number): Money => {
-    if (!Number.isInteger(amount) || amount < 0) {
-        throw new TypeError('amount must be a positive integer');
+    static removeMoney(money: Money, amount: number): Money {
+        // TODO: implement!
     }
-    let change = new Map<Denomination, number>();
-    const walletTotal = countMoney(wallet);
-    if (walletTotal < amount) {
-        throw new Error('cannot pay because wallet has less money than requested amount');
+
+    private static normalizeAmount(amount: number): number {
+        return Math.floor(Math.max(amount, 0));
     }
-    else if (walletTotal === amount) {
-        emptyWallet(wallet);
-    } else if (walletTotal > amount) {
-        const entriesDesc = [...wallet.entries()].sort(([a],[b]) => b-a);
-        change = _pay(entriesDesc, amount);
+
+    /**
+     * Removes the equivalent amount in cents from current money object.
+     * If `forced` flag is enabled it will remove as much as possible even if the required
+     * amount is greater than the current total. If `forced` is disabled it will remove
+     * the required amount only if it is available, else no transaction will take place.
+    */
+    debit(amount: number, forced?: boolean): Money {
+        let debitedMoney = new Map<Denomination, number>();
+        if (amount && typeof amount === 'number') {
+            let rest = Wallet.normalizeAmount(amount);
+            // if not enough money and not forced, return without doing anything
+            if (this.total < rest) {
+                if (forced) {
+                    debitedMoney = this.empty();
+                }
+            } else {
+                for (const den of descDenominationValues) {
+                    if (!rest) { break; }
+                    const qty = Math.floor (rest / den);
+                    if (qty) {
+                        rest %= den;
+                        debitedMoney.add(this.removeDenomination(den, qty));
+                    }
+                }
+            }
+        }
+        return debitedMoney;
     }
-    return change;
-};
+
+    /**
+     * Adds the equivalent amount in cents to current money object
+     */
+    credit(amount: number | Money): void {
+        if (typeof amount === 'number') {
+            let rest = Wallet.normalizeAmount(amount);
+            for (const den of descDenominationValues) {
+                if (!rest) { break; }
+                const qty = Math.floor(rest / den);
+                if (qty) {
+                    rest %= den;
+                    this.addDenomination(den, qty);
+                }
+            }
+        } else if (amount && typeof amount === 'object') {
+            const amountTotal = Wallet.calculateTotal(amount);
+            for (const [den, qty] of amount.entries()) {
+                this.addDenomination(den, qty);
+            }
+        }
+    }
+
+    private calculateTotal(): void {
+        this.total = Wallet.calculateTotal(this._money);
+    }
+
+    private empty(): Money {
+        const currentMoney = new Map<Denomination, number>(this._money);
+        this._money.clear();
+        this.total = 0;
+        return currentMoney;
+    }
+
+    private addDenomination(den: Denomination, qty: number): void {
+        if (qty > 0) {
+            const currDenQty = this._money.get(den) || 0;
+            this._money.set(den, currDenQty + qty);
+            this.total = this.total + qty * den;
+        }
+    }
+
+    private removeDenomination(den: Denomination, qty: number): Money {
+        const removed = new Map<Denomination, number>();
+        const currDenQty = this._money.get(den) || 0;
+        if (0 < qty && qty <= currDenQty) {
+            this._money.set(den, currDenQty - qty);
+            this.total = this.total - qty * den;
+            removed.set(den, qty);
+        }
+        return removed;
+    }
+}
